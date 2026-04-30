@@ -183,8 +183,10 @@ bun run build:images   # Build per-task Docker images (requires base image first
 
 | File | Purpose |
 |---|---|
+| `mock-platform/README.md` | Architecture overview, build flow, and development commands |
 | `mocks/shop/src/index.tsx` | Shop UI and API (Hono TSX rendering) |
 | `mocks/shop/src/search-algorithm.ts` | Extracted search logic (single source of truth) |
+| `mocks/shop/src/search-algorithm.test.ts` | Layer 1 unit tests (bun:test snapshot tests) |
 | `mocks/doc-search/src/index.ts` | Doc-search with FTS5 + JSONL browser trace logging |
 
 ## Task List
@@ -265,14 +267,8 @@ docker build -t liveclawbench-watch-shop tasks/watch-shop/environment/
 
 > **Harbor Dockerfile discovery**: harbor only builds `environment/Dockerfile` by default
 > (path is hardcoded; build context is the `environment/` directory). Subdirectory
-> Dockerfiles (e.g. `environment/browser_mock_sidecar/Dockerfile`) are **never built
-> automatically** — they are only built if the task author explicitly references them
-> in a custom `environment/docker-compose.yaml`. Files inside those subdirectories are
-> typically `COPY`'d into the main container as runtime assets.
->
-> **browser_mock_sidecar** in `conflict-repair-acb` and `mixed-tool-memory` follows this
-> pattern: the sidecar directory is `COPY`'d into the main container and the Python
-> service runs in-process — there is no separate Docker image for it.
+> Dockerfiles are **never built automatically** — they are only built if the task author
+> explicitly references them in a custom `environment/docker-compose.yaml`.
 
 ## Task Structure
 
@@ -370,7 +366,6 @@ pre-commit install      # hooks run automatically on git commit — replaces man
 | `tasks/*/tests/` | ✓ | future (TODO) |
 | `tasks/*/common/` | ✓ | — |
 | `tasks/*/environment/` | ✓ | — |
-| `mock-platform/docs/evidence/` | ✓ | — |
 | `tasks/skill-dependency-fix/environment/skills/` | excluded (intentional fixture) | — |
 | `tasks/skill-repository-curation/environment/.skill_snapshot/` | excluded (intentional fixture) | — |
 | `tasks/skill-repository-curation/environment/skills/` | excluded (intentional fixture) | — |
